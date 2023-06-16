@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/code/app/
+    restart: always
+    container_name: fastapi-app
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    container_name: ecommerceDB
+    image: mysql:8.0
+    volumes:
+      - ./migrations/mysql/ecommerce:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+
+volumes:
+  db_data:
