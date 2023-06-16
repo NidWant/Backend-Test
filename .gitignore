@@ -1,6 +1,6 @@
 # .gitignore
 .env
--dockerignore
+.dockerignore
 
 # Python
 __pycache__
