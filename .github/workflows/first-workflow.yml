@@ -6,8 +6,7 @@ on:
 
   pull_request:
     branches:
-      - master
-      - develop
+      - main
 
 jobs:
   build:
@@ -23,9 +22,9 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const response = await github.pulls.listReviews({
-            owner: github.repository_owner,
-            repo: github.repository,
-            pull_number: github.event.pull_request,
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            pull_number: github.context.payload.pull_request.number,
           });
           const approvals = response.data.filter(review => review.state === 'APPROVED');
           if (approvals.length === 0) {
