@@ -2,33 +2,19 @@ name: Backend CI/CD
 
 on:
 
-  pull_request:
-    branches:
-      - master
-      - develop
+  pull_request_review:
+    branches: [main]
+    types: [submitted]
 
 jobs:
   build:
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     env:
       MYSQL_USER: ${{ secrets.MYSQL_USER_1 }}
       MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
       MYSQL_DATABASE: $ {{ secrets.MYSQL_DATABASE }}
     steps:
-    - name: Esperar aprobación
-      uses: actions/github-script@v4
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const response = await github.pulls.listReviews({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
-          });
-          const approvals = response.data.filter(review => review.state === 'APPROVED');
-          if (approvals.length === 0) {
-            throw new Error('El pull request no ha sido aprobado por ningún colaborador.');
-          }
     - uses: actions/checkout@v2
 
     - name: Build Docker Compose
