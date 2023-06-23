@@ -25,7 +25,7 @@ jobs:
           const response = await github.pulls.listReviews({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            pull_number: github.context.payload.pull_request.number
+            pull_number: github.context.payload.pull_request.number,
           });
           const approvals = response.data.filter(review => review.state === 'APPROVED');
           if (approvals.length === 0) {
