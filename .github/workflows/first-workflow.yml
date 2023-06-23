@@ -22,13 +22,10 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
-            print("Funciona?")
-          }
           const response = await github.pulls.listReviews({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            pull_number: github.context.payload.pull_request.number,
+            owner: github.repository_owner,
+            repo: github.repository,
+            pull_number: github.event.pull_request,
           });
           const approvals = response.data.filter(review => review.state === 'APPROVED');
           if (approvals.length === 0) {
