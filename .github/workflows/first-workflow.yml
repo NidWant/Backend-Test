@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
 
+  pull_request:
+    branches:
+      - master
+      - develop
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,6 +17,21 @@ jobs:
       MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
       MYSQL_DATABASE: $ {{ secrets.MYSQL_DATABASE }}
     steps:
+    - name: Wait approval
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const response = await github.pulls.listReviews({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+          const approvals = response.data.filter(review => review.state === 'APPROVED');
+          if (approvals.length === 0) {
+            throw new Error('Pull request not is approved')
+          }
+
     - uses: actions/checkout@v2
 
     - name: Build Docker Compose
