@@ -21,6 +21,9 @@ jobs:
       uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+          if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
+            print("Funciona?")
+          }
         script: |
           const response = await github.pulls.listReviews({
             owner: github.context.repo.owner,
