@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
 
+  pull_request:
+    branches:
+      - master
+      - develop
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,7 +17,7 @@ jobs:
       MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
       MYSQL_DATABASE: $ {{ secrets.MYSQL_DATABASE }}
     steps:
-    - name: Waiting approved
+    - name: Esperar aprobación
       uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -26,7 +31,6 @@ jobs:
           if (approvals.length === 0) {
             throw new Error('El pull request no ha sido aprobado por ningún colaborador.');
           }
-
     - uses: actions/checkout@v2
 
     - name: Build Docker Compose
