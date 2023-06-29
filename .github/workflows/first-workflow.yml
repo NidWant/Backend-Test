@@ -15,7 +15,7 @@ on:
 # docker-compose -f docker-compose.yml up --build -d
 jobs:
   build:
-    if: ${{ github.event.review.state == 'approved' && (contains(github.base_ref, 'main') && contains(github.ref, 'release') }}
+    if: ${{ github.event.review.state == 'approved' && (contains(github.base_ref, 'main') && contains(github.ref, 'release')) }}
     runs-on: ubuntu-latest
     env:
       MYSQL_USER: ${{ secrets.MYSQL_USER_1 }}
