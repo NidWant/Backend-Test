@@ -17,7 +17,6 @@ jobs:
   build:
     if: ${{ github.event.review.state == 'approved' |
             && (contains(github.base_ref, main) |
-            && contains(github.head_ref, develop) |
             &&} contains(github.ref, release)}
     runs-on: ubuntu-latest
     env:
