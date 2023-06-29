@@ -26,5 +26,5 @@ jobs:
     - name: Unit Test
       run: echo "Running Unit Test"
     - name: Build Docker Compose
-      if: ${{ github.event_name == 'push' && (contains(github.base_ref, 'main')}}
+      if: ${{ github.event_name == 'push' && contains(github.base_ref, 'main')}}
       run: echo "Deploying to production server on branch $GITHUB_REF"
