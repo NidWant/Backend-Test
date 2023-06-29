@@ -1,14 +1,24 @@
 name: Backend CI/CD
 
 on:
+  push:
+    branches: [main]
 
   pull_request_review:
-    branches: [main]
+    branches: [develop, main]
     types: [submitted]
 
+# github.event.review.state == 'approved'
+# github.base_ref: Target
+# github.head_ref: Source
+# github.ref: Branch or label triggered
+# docker-compose -f docker-compose.yml up --build -d
 jobs:
   build:
-    if: github.event.review.state == 'approved'
+    if: ${{ github.event.review.state == 'approved' |
+            && (contains(github.base_ref, main) |
+            && contains(github.head_ref, develop) |
+            &&} contains(github.ref, release)}
     runs-on: ubuntu-latest
     env:
       MYSQL_USER: ${{ secrets.MYSQL_USER_1 }}
@@ -16,6 +26,8 @@ jobs:
       MYSQL_DATABASE: $ {{ secrets.MYSQL_DATABASE }}
     steps:
     - uses: actions/checkout@v2
-
+    - name: Unit Test
+      run: echo "Running Unit Test"
     - name: Build Docker Compose
-      run: docker-compose -f docker-compose.yml up --build -d
+      if: ${{ github.event_name == 'push' && (contains(github.base_ref, main)}}
+      run: echo "Deploying to production server on branch $GITHUB_REF"
